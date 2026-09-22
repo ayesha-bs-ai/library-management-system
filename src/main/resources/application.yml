@@ -62,7 +62,7 @@ springdoc:
     path: /swagger-ui.html
 
 app:
-  library-name: ${LIBRARY_NAME:Library Hub}
+  library-name: ${LIBRARY_NAME:Simple Library}
   base-url: ${APP_BASE_URL:http://localhost:8080}
   currency: ${APP_CURRENCY:PKR}
   mail-enabled: ${MAIL_ENABLED:false}

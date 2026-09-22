@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="theme-color" content="#f8fafd">
-    <title th:text="${pageTitle + ' · ' + libraryName}">Library Hub</title>
+    <title th:text="${pageTitle + ' · ' + libraryName}">Simple Library</title>
     <link rel="stylesheet" th:href="@{/css/app.css}">
     <script defer th:src="@{/js/app.js}"></script>
 </head>
@@ -18,7 +18,7 @@
                 </svg>
                 <span class="absolute bottom-0 left-0 h-1 w-1/4 bg-google-red"></span><span class="absolute bottom-0 left-1/4 h-1 w-1/4 bg-google-yellow"></span><span class="absolute bottom-0 left-2/4 h-1 w-1/4 bg-google-green"></span><span class="absolute bottom-0 right-0 h-1 w-1/4 bg-google-blue"></span>
             </span>
-            <span class="hidden text-lg font-semibold tracking-tight text-slate-800 sm:block" th:text="${libraryName}">Library Hub</span>
+            <span class="hidden text-lg font-semibold tracking-tight text-slate-800 sm:block" th:text="${libraryName}">Simple Library</span>
         </a>
 
         <div class="hidden flex-1 items-center gap-1 lg:flex">
@@ -82,7 +82,7 @@
 
 <footer th:fragment="footer" class="mt-20 border-t border-slate-200 bg-white">
     <div class="mx-auto flex max-w-7xl flex-col gap-4 px-4 py-8 text-sm text-muted sm:flex-row sm:items-center sm:justify-between sm:px-6 lg:px-8">
-        <p><span th:text="${libraryName}">Library Hub</span> · Thoughtful tools for every reader.</p>
+        <p><span th:text="${libraryName}">Simple Library</span> · Thoughtful tools for every reader.</p>
         <p>© <span th:text="${currentYear}">2026</span> · Built with Java and Tailwind CSS</p>
     </div>
 </footer>
