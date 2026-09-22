@@ -1,8 +1,11 @@
 spring:
   datasource:
-    url: ${DATABASE_URL}
-    username: ${DATABASE_USERNAME}
-    password: ${DATABASE_PASSWORD}
+    # Railway provides DATABASE_URL as postgres://... - our EnvironmentPostProcessor converts it automatically
+    # For manual setup, you can use JDBC_DATABASE_URL or DATABASE_URL as jdbc:postgresql://...
+    # Fallback chain: JDBC_DATABASE_URL -> DATABASE_URL (converted) -> DATABASE_PRIVATE_URL
+    url: ${JDBC_DATABASE_URL:${DATABASE_URL:jdbc:postgresql://localhost:5432/library}}
+    username: ${DATABASE_USERNAME:${PGUSER:library}}
+    password: ${DATABASE_PASSWORD:${PGPASSWORD:}}
     driver-class-name: org.postgresql.Driver
     hikari:
       maximum-pool-size: ${DB_POOL_SIZE:10}
@@ -13,24 +16,33 @@ spring:
   thymeleaf:
     cache: true
   mail:
-    host: ${MAIL_HOST}
+    host: ${MAIL_HOST:localhost}
     port: ${MAIL_PORT:587}
     username: ${MAIL_USERNAME:}
     password: ${MAIL_PASSWORD:}
     properties:
-      mail.smtp.auth: ${MAIL_AUTH:true}
-      mail.smtp.starttls.enable: ${MAIL_STARTTLS:true}
+      mail.smtp.auth: ${MAIL_AUTH:false}
+      mail.smtp.starttls.enable: ${MAIL_STARTTLS:false}
 
 server:
   servlet:
     session:
       cookie:
         secure: true
+        same-site: lax
+        http-only: true
 
 app:
-  mail-enabled: ${MAIL_ENABLED:true}
+  mail-enabled: ${MAIL_ENABLED:false}
+  base-url: ${APP_BASE_URL:${RAILWAY_PUBLIC_DOMAIN:http://localhost:8080}}
 
 management:
   health:
     mail:
-      enabled: ${MAIL_ENABLED:true}
+      enabled: ${MAIL_ENABLED:false}
+    db:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: health,info

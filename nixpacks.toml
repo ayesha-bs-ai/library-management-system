@@ -1,0 +1,19 @@
+[phases.setup]
+nixPkgs = ["jdk21", "nodejs_20"]
+
+[phases.install]
+cmds = [
+  "npm ci",
+  "npm run build:css"
+]
+
+[phases.build]
+cmds = [
+  "./mvnw -B -DskipTests package"
+]
+
+[start]
+cmd = "java -XX:MaxRAMPercentage=75 -Dserver.port=${PORT:-8080} -jar target/library-management-system-*.jar --spring.profiles.active=prod"
+
+[variables]
+NIXPACKS_NO_MUSL = "1"
