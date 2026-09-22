@@ -176,7 +176,7 @@ public class DevDataInitializer implements CommandLineRunner {
 
         Notification welcome = new Notification();
         welcome.setUser(memberUser);
-        welcome.setTitle("Welcome to Simple Library");
+        welcome.setTitle("Welcome to Library");
         welcome.setMessage("Your member portal is ready. Search the catalog, review loans, and reserve books from anywhere.");
         welcome.setType(NotificationType.INFO);
         notifications.save(welcome);
