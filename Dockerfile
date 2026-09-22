@@ -1,4 +1,3 @@
-# Stage 1: Build Tailwind CSS
 FROM node:20-alpine AS styles
 WORKDIR /workspace
 COPY package.json package-lock.json* tailwind.config.js ./
@@ -7,7 +6,6 @@ COPY src/main/frontend ./src/main/frontend
 COPY src/main/resources/templates ./src/main/resources/templates
 RUN npm run build:css && ls -lh src/main/resources/static/css/
 
-# Stage 2: Build Java application
 FROM eclipse-temurin:21-jdk-alpine AS build
 WORKDIR /workspace
 COPY .mvn .mvn
@@ -17,7 +15,6 @@ COPY src src
 COPY --from=styles /workspace/src/main/resources/static/css/app.css src/main/resources/static/css/app.css
 RUN ls -lh src/main/resources/static/css/ && ./mvnw -B -DskipTests clean package
 
-# Stage 3: Runtime
 FROM eclipse-temurin:21-jre-alpine
 WORKDIR /app
 RUN apk add --no-cache curl

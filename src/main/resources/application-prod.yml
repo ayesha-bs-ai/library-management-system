@@ -1,8 +1,5 @@
 spring:
   datasource:
-    # Railway provides DATABASE_URL as postgres://... - our EnvironmentPostProcessor converts it automatically
-    # For manual setup, you can use JDBC_DATABASE_URL or DATABASE_URL as jdbc:postgresql://...
-    # Fallback chain: JDBC_DATABASE_URL -> DATABASE_URL (converted) -> DATABASE_PRIVATE_URL
     url: ${JDBC_DATABASE_URL:${DATABASE_URL:jdbc:postgresql://localhost:5432/library}}
     username: ${DATABASE_USERNAME:${PGUSER:library}}
     password: ${DATABASE_PASSWORD:${PGPASSWORD:}}
