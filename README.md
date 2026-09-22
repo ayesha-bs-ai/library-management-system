@@ -55,7 +55,7 @@ The interface uses Tailwind CSS and a clean, search-first Material-inspired visu
 ### Requirements
 
 - Java 21
-- Node.js 20 or newer
+- Node.js 24 LTS
 
 ### Run locally
 

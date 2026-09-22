@@ -1,4 +1,4 @@
-FROM node:20-alpine AS styles
+FROM node:24-alpine AS styles
 WORKDIR /workspace
 COPY package.json package-lock.json* tailwind.config.js ./
 RUN npm ci
