@@ -8,7 +8,7 @@
     "watch:css": "tailwindcss -i ./src/main/frontend/app.css -o ./src/main/resources/static/css/app.css --watch"
   },
   "devDependencies": {
-    "tailwindcss": "3.4.17"
+    "tailwindcss": "4.3.3"
   },
   "engines": {
     "node": ">=22"
