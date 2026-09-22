@@ -19,11 +19,12 @@ FROM eclipse-temurin:21-jre-alpine
 WORKDIR /app
 RUN apk add --no-cache curl
 RUN addgroup -S library && adduser -S library -G library
-RUN mkdir -p /app/data && chown -R library:library /app
+RUN mkdir -p /app/data /app/uploads/covers && chown -R library:library /app
 COPY --from=build /workspace/target/library-management-system-*.jar app.jar
 USER library
 EXPOSE 8080
 ENV SPRING_PROFILES_ACTIVE=prod
+ENV APP_UPLOAD_DIR=/app/uploads
 ENV JAVA_OPTS="-XX:MaxRAMPercentage=75 -XX:+UseG1GC"
 HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
   CMD curl -f http://localhost:${PORT:-8080}/actuator/health || exit 1
