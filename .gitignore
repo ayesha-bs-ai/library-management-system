@@ -37,6 +37,12 @@ bin/
 # VS Code
 .vscode/
 
+# Node/Tailwind tooling
+node_modules/
+
+# Local application data
+/data/
+
 # Runtime and logs
 *.log
 logs/

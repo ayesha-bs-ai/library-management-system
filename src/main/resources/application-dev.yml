@@ -1,0 +1,11 @@
+spring:
+  thymeleaf:
+    cache: false
+  jpa:
+    show-sql: false
+app:
+  mail-enabled: false
+  demo-mode: true
+logging:
+  level:
+    com.librarymanagement: INFO

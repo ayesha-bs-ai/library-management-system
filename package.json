@@ -1,0 +1,13 @@
+{
+  "name": "library-management-system-ui",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Tailwind CSS build for the Library Management System",
+  "scripts": {
+    "build:css": "tailwindcss -i ./src/main/frontend/app.css -o ./src/main/resources/static/css/app.css --minify",
+    "watch:css": "tailwindcss -i ./src/main/frontend/app.css -o ./src/main/resources/static/css/app.css --watch"
+  },
+  "devDependencies": {
+    "tailwindcss": "3.4.17"
+  }
+}

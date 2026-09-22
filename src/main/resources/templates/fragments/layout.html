@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:fragment="head(pageTitle)">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#f8fafd">
+    <title th:text="${pageTitle + ' · ' + libraryName}">Library Hub</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+    <script defer th:src="@{/js/app.js}"></script>
+</head>
+<body>
+<nav th:fragment="nav(active)" class="sticky top-0 z-40 border-b border-slate-200/80 bg-white/90 backdrop-blur-xl">
+    <div class="mx-auto flex h-16 max-w-7xl items-center gap-4 px-4 sm:px-6 lg:px-8">
+        <a th:href="@{/}" class="flex shrink-0 items-center gap-3 rounded-xl" aria-label="Library home">
+            <span class="relative grid h-9 w-9 place-items-center overflow-hidden rounded-xl bg-primary-600 shadow-sm">
+                <svg class="h-5 w-5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                    <path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H11v16H6.5A2.5 2.5 0 0 0 4 21.5v-16Z"/><path d="M20 5.5A2.5 2.5 0 0 0 17.5 3H13v16h4.5a2.5 2.5 0 0 1 2.5 2.5v-16Z"/>
+                </svg>
+                <span class="absolute bottom-0 left-0 h-1 w-1/4 bg-google-red"></span><span class="absolute bottom-0 left-1/4 h-1 w-1/4 bg-google-yellow"></span><span class="absolute bottom-0 left-2/4 h-1 w-1/4 bg-google-green"></span><span class="absolute bottom-0 right-0 h-1 w-1/4 bg-google-blue"></span>
+            </span>
+            <span class="hidden text-lg font-semibold tracking-tight text-slate-800 sm:block" th:text="${libraryName}">Library Hub</span>
+        </a>
+
+        <div class="hidden flex-1 items-center gap-1 lg:flex">
+            <a th:href="@{/catalog}" class="nav-link" th:classappend="${active == 'catalog'} ? ' nav-link-active'">Catalog</a>
+            <div sec:authorize="hasAnyRole('ADMIN','LIBRARIAN')" class="flex items-center gap-1">
+                <a th:href="@{/staff/dashboard}" class="nav-link" th:classappend="${active == 'dashboard'} ? ' nav-link-active'">Overview</a>
+                <a th:href="@{/staff/circulation}" class="nav-link" th:classappend="${active == 'circulation'} ? ' nav-link-active'">Circulation</a>
+                <a th:href="@{/staff/books}" class="nav-link" th:classappend="${active == 'books'} ? ' nav-link-active'">Books</a>
+                <a th:href="@{/staff/members}" class="nav-link" th:classappend="${active == 'members'} ? ' nav-link-active'">Members</a>
+                <a th:href="@{/staff/reservations}" class="nav-link" th:classappend="${active == 'reservations'} ? ' nav-link-active'">Reservations</a>
+                <a th:href="@{/staff/reports}" class="nav-link" th:classappend="${active == 'reports'} ? ' nav-link-active'">Reports</a>
+            </div>
+            <a sec:authorize="hasRole('MEMBER')" th:href="@{/my/account}" class="nav-link" th:classappend="${active == 'account'} ? ' nav-link-active'">My library</a>
+        </div>
+
+        <div class="ml-auto flex items-center gap-2">
+            <a th:href="@{/catalog}" class="icon-button" aria-label="Search catalog">
+                <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg>
+            </a>
+            <a sec:authorize="hasRole('MEMBER')" th:href="@{/my/account#notifications}" class="icon-button relative" aria-label="Notifications">
+                <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"/><path d="M10 21h4"/></svg>
+                <span th:if="${unreadNotificationCount != null and unreadNotificationCount > 0}" class="absolute right-1 top-1 h-2.5 w-2.5 rounded-full border-2 border-white bg-google-red"></span>
+            </a>
+            <div sec:authorize="isAnonymous()">
+                <a th:href="@{/login}" class="btn-primary">Sign in</a>
+            </div>
+            <div sec:authorize="isAuthenticated()" class="hidden items-center gap-2 sm:flex">
+                <div class="grid h-9 w-9 place-items-center rounded-full bg-primary-100 text-sm font-bold text-primary-700" th:text="${#strings.substring(currentUser.displayName,0,1)}">A</div>
+                <div class="hidden xl:block">
+                    <p class="max-w-32 truncate text-sm font-semibold" th:text="${currentUser.displayName}">User</p>
+                    <p class="text-xs capitalize text-muted" th:text="${#strings.toLowerCase(currentUser.role)}">role</p>
+                </div>
+                <form th:action="@{/logout}" method="post"><button class="icon-button" aria-label="Sign out" title="Sign out"><svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 17l5-5-5-5"/><path d="M15 12H3"/><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/></svg></button></form>
+            </div>
+            <button data-menu-button class="icon-button lg:hidden" aria-label="Open navigation" aria-expanded="false">
+                <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+            </button>
+        </div>
+    </div>
+    <div data-mobile-menu class="hidden border-t border-slate-200 bg-white px-4 py-3 lg:hidden">
+        <div class="mx-auto grid max-w-7xl gap-1">
+            <a th:href="@{/catalog}" class="nav-link">Catalog</a>
+            <div sec:authorize="hasAnyRole('ADMIN','LIBRARIAN')" class="grid gap-1">
+                <a th:href="@{/staff/dashboard}" class="nav-link">Overview</a><a th:href="@{/staff/circulation}" class="nav-link">Circulation</a><a th:href="@{/staff/books}" class="nav-link">Books</a><a th:href="@{/staff/members}" class="nav-link">Members</a><a th:href="@{/staff/reservations}" class="nav-link">Reservations</a><a th:href="@{/staff/reports}" class="nav-link">Reports</a>
+            </div>
+            <a sec:authorize="hasRole('MEMBER')" th:href="@{/my/account}" class="nav-link">My library</a>
+            <div sec:authorize="hasRole('ADMIN')" class="grid gap-1 border-t border-slate-100 pt-2"><a th:href="@{/admin/users}" class="nav-link">Staff accounts</a><a th:href="@{/admin/settings}" class="nav-link">Settings</a><a th:href="@{/admin/audit}" class="nav-link">Audit log</a></div>
+            <form sec:authorize="isAuthenticated()" th:action="@{/logout}" method="post"><button class="nav-link w-full text-left">Sign out</button></form>
+        </div>
+    </div>
+</nav>
+
+<div th:fragment="flash" class="fixed right-4 top-20 z-50 grid w-[min(24rem,calc(100%-2rem))] gap-3">
+    <div data-flash th:if="${success}" class="flex items-start gap-3 rounded-2xl border border-emerald-200 bg-white p-4 text-sm text-emerald-800 shadow-lifted transition duration-300">
+        <svg class="mt-0.5 h-5 w-5 shrink-0 text-emerald-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg><span th:text="${success}">Success</span>
+    </div>
+    <div data-flash th:if="${error}" class="flex items-start gap-3 rounded-2xl border border-red-200 bg-white p-4 text-sm text-red-800 shadow-lifted transition duration-300">
+        <svg class="mt-0.5 h-5 w-5 shrink-0 text-red-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 17h.01"/></svg><span th:text="${error}">Error</span>
+    </div>
+</div>
+
+<footer th:fragment="footer" class="mt-20 border-t border-slate-200 bg-white">
+    <div class="mx-auto flex max-w-7xl flex-col gap-4 px-4 py-8 text-sm text-muted sm:flex-row sm:items-center sm:justify-between sm:px-6 lg:px-8">
+        <p><span th:text="${libraryName}">Library Hub</span> · Thoughtful tools for every reader.</p>
+        <p>© <span th:text="${currentYear}">2026</span> · Built with Java and Tailwind CSS</p>
+    </div>
+</footer>
+</body>
+</html>

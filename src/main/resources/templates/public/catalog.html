@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head(${title})}"></head>
+<body>
+<nav th:replace="~{fragments/layout :: nav('catalog')}"></nav>
+<div th:replace="~{fragments/layout :: flash}"></div>
+<main class="mx-auto min-h-[70vh] max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
+    <div class="mx-auto max-w-3xl text-center">
+        <h1 class="page-title" th:text="${q.isBlank() ? 'Browse the catalog' : 'Search the catalog'}">Browse</h1>
+        <p class="page-subtitle mx-auto">Books, ideas, and your next favorite read—one search away.</p>
+        <form th:action="@{/catalog}" method="get" class="mt-7 flex items-center gap-3 rounded-full border border-slate-200 bg-white p-2 pl-5 shadow-search">
+            <svg class="h-5 w-5 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg>
+            <input name="q" th:value="${q}" class="min-w-0 flex-1 border-0 bg-transparent py-2.5 outline-none" placeholder="Title, author, ISBN, category…" aria-label="Search catalog">
+            <button class="btn-primary" type="submit">Search</button>
+        </form>
+    </div>
+
+    <div class="mb-6 mt-12 flex items-center justify-between">
+        <p class="text-sm text-muted"><strong class="text-ink" th:text="${result.totalElements}">0</strong> titles found <span th:if="${!q.isBlank()}">for “<span th:text="${q}">query</span>”</span></p>
+        <a th:if="${!q.isBlank()}" th:href="@{/catalog}" class="text-sm font-semibold text-primary-700 hover:underline">Clear search</a>
+    </div>
+
+    <div th:if="${books.isEmpty()}" class="surface py-20 text-center">
+        <div class="mx-auto grid h-16 w-16 place-items-center rounded-full bg-slate-100 text-slate-500"><svg class="h-8 w-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg></div>
+        <h2 class="mt-5 text-xl font-semibold">No books found</h2><p class="mt-2 text-sm text-muted">Try a broader title, author name, or category.</p>
+    </div>
+    <div th:unless="${books.isEmpty()}" class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        <th:block th:each="book : ${books}"><div th:replace="~{fragments/book-card :: card(${book}, ${availability[book.id]})}"></div></th:block>
+    </div>
+
+    <nav th:if="${result.totalPages > 1}" class="mt-10 flex items-center justify-center gap-2" aria-label="Pagination">
+        <a th:if="${result.hasPrevious()}" th:href="@{/catalog(q=${q},page=${result.number - 1})}" class="btn-secondary">← Previous</a>
+        <span class="px-4 text-sm text-muted">Page <strong th:text="${result.number + 1}">1</strong> of <strong th:text="${result.totalPages}">1</strong></span>
+        <a th:if="${result.hasNext()}" th:href="@{/catalog(q=${q},page=${result.number + 1})}" class="btn-secondary">Next →</a>
+    </nav>
+</main>
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+</body>
+</html>

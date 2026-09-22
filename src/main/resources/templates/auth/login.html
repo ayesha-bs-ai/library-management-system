@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Sign in')}"></head>
+<body class="min-h-screen bg-white">
+<div class="grid min-h-screen lg:grid-cols-2">
+    <div class="flex flex-col px-6 py-8 sm:px-12 lg:px-16">
+        <a th:href="@{/}" class="flex w-fit items-center gap-3">
+            <span class="grid h-10 w-10 place-items-center rounded-xl bg-primary-600 text-white shadow-sm"><svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H11v16H6.5A2.5 2.5 0 0 0 4 21.5v-16Z"/><path d="M20 5.5A2.5 2.5 0 0 0 17.5 3H13v16h4.5a2.5 2.5 0 0 1 2.5 2.5v-16Z"/></svg></span>
+            <span class="text-xl font-semibold" th:text="${libraryName}">Library Hub</span>
+        </a>
+        <div class="mx-auto flex w-full max-w-md flex-1 flex-col justify-center py-12">
+            <p class="text-sm font-semibold text-primary-600">Welcome back</p>
+            <h1 class="mt-3 text-4xl font-semibold tracking-tight">Sign in to your library</h1>
+            <p class="mt-3 text-muted">Use your staff or member account to continue.</p>
+
+            <div th:if="${param.error}" class="mt-6 rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">The email or password is incorrect, or this account is disabled.</div>
+            <div th:if="${param.logout}" class="mt-6 rounded-2xl border border-emerald-200 bg-emerald-50 p-4 text-sm text-emerald-700">You have been signed out safely.</div>
+
+            <form th:action="@{/login}" method="post" class="mt-8 grid gap-5">
+                <div><label for="email" class="field-label">Email address</label><input id="email" name="email" type="email" autocomplete="username" class="field" placeholder="you@example.com" required autofocus></div>
+                <div><div class="mb-2 flex items-center justify-between"><label for="password" class="text-sm font-semibold text-slate-700">Password</label></div><input id="password" name="password" type="password" autocomplete="current-password" class="field" placeholder="Enter your password" required></div>
+                <button class="btn-primary mt-2 w-full py-3" type="submit">Sign in</button>
+            </form>
+
+            <div th:if="${demoMode}" class="mt-8 rounded-3xl bg-primary-50 p-5">
+                <p class="text-sm font-semibold text-primary-900">Demo accounts</p>
+                <div class="mt-3 grid gap-3 text-xs text-primary-900">
+                    <div class="flex items-center justify-between gap-4"><span><strong>Admin</strong><br>admin@library.local</span><code class="rounded-lg bg-white px-2 py-1">Admin@12345</code></div>
+                    <div class="flex items-center justify-between gap-4"><span><strong>Librarian</strong><br>librarian@library.local</span><code class="rounded-lg bg-white px-2 py-1">Library@12345</code></div>
+                    <div class="flex items-center justify-between gap-4"><span><strong>Member</strong><br>member@library.local</span><code class="rounded-lg bg-white px-2 py-1">Member@12345</code></div>
+                </div>
+            </div>
+            <a th:href="@{/}" class="mt-7 text-center text-sm font-semibold text-primary-700 hover:underline">← Return to catalog</a>
+        </div>
+    </div>
+    <div class="relative hidden overflow-hidden bg-primary-700 lg:block">
+        <div class="absolute -right-24 -top-24 h-96 w-96 rounded-full border-[64px] border-white/10"></div><div class="absolute bottom-24 left-20 h-40 w-40 rounded-full bg-google-yellow"></div><div class="absolute bottom-0 right-0 h-72 w-72 rounded-tl-[8rem] bg-google-green/80"></div>
+        <div class="relative flex h-full items-center p-16 text-white"><div class="max-w-lg"><p class="text-sm font-semibold uppercase tracking-[.22em] text-blue-200">Read · Learn · Grow</p><h2 class="mt-6 text-5xl font-semibold leading-tight tracking-tight">Every great journey starts with a page.</h2><p class="mt-6 text-lg leading-8 text-blue-100">A calm, connected place for readers, librarians, and every story on the shelf.</p></div></div>
+    </div>
+</div>
+</body>
+</html>
