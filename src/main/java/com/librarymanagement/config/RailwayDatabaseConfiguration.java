@@ -68,7 +68,9 @@ public class RailwayDatabaseConfiguration {
             if (effectivePassword != null && !effectivePassword.isBlank()) ds.setPassword(effectivePassword);
             ds.setMaximumPoolSize(poolSize);
             ds.setMinimumIdle(2);
-            ds.setDriverClassName("org.postgresql.Driver");
+            // Set driver based on URL
+            if (effectiveUrl.contains("postgresql")) ds.setDriverClassName("org.postgresql.Driver");
+            else if (effectiveUrl.contains("h2")) ds.setDriverClassName("org.h2.Driver");
             System.out.println("[Railway DB Config] DataSource configured - URL: " + maskPassword(effectiveUrl) + ", User: " + effectiveUsername);
             return ds;
         }
@@ -82,6 +84,8 @@ public class RailwayDatabaseConfiguration {
             if (pass != null) ds.setPassword(pass);
             ds.setMaximumPoolSize(poolSize);
             ds.setMinimumIdle(2);
+            if (springUrl.contains("postgresql")) ds.setDriverClassName("org.postgresql.Driver");
+            else if (springUrl.contains("h2")) ds.setDriverClassName("org.h2.Driver");
             return ds;
         }
         String fallbackUrl = env.getProperty("spring.datasource.url", "jdbc:postgresql://localhost:5432/library");
@@ -93,6 +97,8 @@ public class RailwayDatabaseConfiguration {
         ds.setPassword(fallbackPass);
         ds.setMaximumPoolSize(poolSize);
         ds.setMinimumIdle(2);
+        if (fallbackUrl.contains("postgresql")) ds.setDriverClassName("org.postgresql.Driver");
+        else if (fallbackUrl.contains("h2")) ds.setDriverClassName("org.h2.Driver");
         return ds;
     }
     private String convertToJdbc(String postgresUrl) {
