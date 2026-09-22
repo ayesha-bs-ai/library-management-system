@@ -56,3 +56,7 @@ logs/
 # Operating system files
 .DS_Store
 Thumbs.db
+
+# uploaded book covers
+/uploads/
+uploads/

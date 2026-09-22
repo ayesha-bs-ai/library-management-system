@@ -1,8 +1,48 @@
-<!DOCTYPE html><html lang="en" xmlns:th="http://www.thymeleaf.org"><head th:replace="~{fragments/layout :: head(${title})}"></head><body>
-<nav th:replace="~{fragments/layout :: nav('books')}"></nav><div th:replace="~{fragments/layout :: flash}"></div>
+<!DOCTYPE html><html lang="en" xmlns:th="http://www.thymeleaf.org"><head th:replace="~{fragments/layout :: head(${title})}\"></head><body>
+<nav th:replace="~{fragments/layout :: nav('books')}\"></nav><div th:replace="~{fragments/layout :: flash}\"></div>
 <main class="mx-auto max-w-4xl px-4 py-10 sm:px-6 lg:px-8"><a th:href="${editing} ? @{/staff/books/{id}(id=${bookId})} : @{/staff/books}" class="text-sm font-semibold text-primary-700">← Back</a><div class="mt-5"><h1 class="page-title" th:text="${title}">Book</h1><p class="page-subtitle">Keep the catalog clear, searchable, and useful to readers.</p></div>
-<form th:object="${bookForm}" th:action="${editing} ? @{/staff/books/{id}(id=${bookId})} : @{/staff/books}" method="post" class="surface mt-8 p-6 sm:p-8">
+<form th:object="${bookForm}" th:action="${editing} ? @{/staff/books/{id}(id=${bookId})} : @{/staff/books}" method="post" enctype="multipart/form-data" class="surface mt-8 p-6 sm:p-8">
 <div th:if="${#fields.hasGlobalErrors()}" class="mb-6 rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-700"><p th:each="e : ${#fields.globalErrors()}" th:text="${e}">Error</p></div>
+
+<!-- Cover Image Section -->
+<div class="mb-8 rounded-2xl border border-slate-200 bg-slate-50/70 p-5">
+  <h3 class="text-sm font-semibold text-slate-800">Cover Image</h3>
+  <p class="mt-1 text-xs text-muted">Upload a cover (JPEG, PNG, WebP, GIF — max 5MB) or paste an external URL.</p>
+  <div class="mt-4 grid gap-5 sm:grid-cols-[140px_1fr]">
+    <div>
+      <div class="relative aspect-[3/4] overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
+        <img id="coverPreview" th:if="${bookForm.existingCoverImagePath != null}" th:src="@{/uploads/covers/{f}(f=${bookForm.existingCoverImagePath})}" alt="Cover preview" class="h-full w-full object-cover">
+        <img id="coverPreviewExternal" th:if="${bookForm.existingCoverImagePath == null and bookForm.coverImageUrl != null and !bookForm.coverImageUrl.isBlank()}" th:src="${bookForm.coverImageUrl}" alt="Cover preview" class="h-full w-full object-cover">
+        <div id="coverPlaceholder" th:classappend="${(bookForm.existingCoverImagePath != null) or (bookForm.coverImageUrl != null and !bookForm.coverImageUrl.isBlank())} ? 'hidden' : ''" class="grid h-full w-full place-items-center bg-gradient-to-br from-primary-700 to-blue-400 text-white">
+          <span class="text-3xl font-bold">?</span>
+        </div>
+      </div>
+      <div th:if="${editing and (bookForm.existingCoverImagePath != null or (bookForm.coverImageUrl != null and !bookForm.coverImageUrl.isBlank()))}" class="mt-3">
+        <label class="inline-flex items-center gap-2 text-xs font-medium text-red-600">
+          <input type="checkbox" th:field="*{removeCoverImage}" class="rounded border-slate-300"> Remove cover
+        </label>
+      </div>
+    </div>
+    <div class="space-y-4">
+      <div>
+        <label class="field-label" for="coverImage">Upload file</label>
+        <input id="coverImage" type="file" th:field="*{coverImage}" accept="image/jpeg,image/png,image/webp,image/gif" class="field file:mr-3 file:rounded-full file:border-0 file:bg-primary-600 file:px-4 file:py-1.5 file:text-sm file:font-semibold file:text-white hover:file:bg-primary-700">
+        <p class="mt-1.5 text-xs text-muted">Recommended: 600×800px, 5MB max.</p>
+      </div>
+      <div class="flex items-center gap-3 text-xs text-muted">
+        <span class="h-px flex-1 bg-slate-200"></span> OR <span class="h-px flex-1 bg-slate-200"></span>
+      </div>
+      <div>
+        <label class="field-label" for="coverImageUrl">Image URL</label>
+        <input id="coverImageUrl" th:field="*{coverImageUrl}" class="field" placeholder="https://example.com/cover.jpg">
+        <p class="field-error" th:errors="*{coverImageUrl}"></p>
+        <p class="mt-1.5 text-xs text-muted">External URL will be used if no file is uploaded.</p>
+      </div>
+      <input type="hidden" th:field="*{existingCoverImagePath}">
+    </div>
+  </div>
+</div>
+
 <div class="grid gap-6 sm:grid-cols-2">
 <div class="sm:col-span-2"><label class="field-label" for="title">Title</label><input id="title" th:field="*{title}" class="field" placeholder="Book title"><p class="field-error" th:errors="*{title}"></p></div>
 <div class="sm:col-span-2"><label class="field-label" for="subtitle">Subtitle</label><input id="subtitle" th:field="*{subtitle}" class="field" placeholder="Optional subtitle"><p class="field-error" th:errors="*{subtitle}"></p></div>
@@ -14,4 +54,66 @@
 <div><label class="field-label" for="language">Language</label><input id="language" th:field="*{language}" class="field"><p class="field-error" th:errors="*{language}"></p></div>
 <div class="sm:col-span-2"><label class="field-label" for="description">Description</label><textarea id="description" th:field="*{description}" class="field min-h-36" placeholder="A clear description for readers"></textarea><p class="field-error" th:errors="*{description}"></p></div>
 </div><div class="mt-8 flex flex-wrap justify-end gap-3"><a th:href="${editing} ? @{/staff/books/{id}(id=${bookId})} : @{/staff/books}" class="btn-ghost">Cancel</a><button class="btn-primary" type="submit" th:text="${editing ? 'Save changes' : 'Add book'}">Save</button></div>
-</form></main><footer th:replace="~{fragments/layout :: footer}"></footer></body></html>
+</form></main><footer th:replace="~{fragments/layout :: footer}\"></footer>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const fileInput = document.getElementById('coverImage');
+  const urlInput = document.getElementById('coverImageUrl');
+  const preview = document.getElementById('coverPreview');
+  const previewExternal = document.getElementById('coverPreviewExternal');
+  const placeholder = document.getElementById('coverPlaceholder');
+  const existingPreview = preview || previewExternal;
+
+  function showPlaceholder(show) {
+    if (placeholder) placeholder.classList.toggle('hidden', !show);
+  }
+  function ensurePreviewImg() {
+    let img = document.getElementById('coverPreview');
+    if (!img) {
+      const container = placeholder ? placeholder.parentElement : document.querySelector('.aspect-\\[3\\/4\\]');
+      if (!container) return null;
+      img = document.createElement('img');
+      img.id = 'coverPreview';
+      img.alt = 'Cover preview';
+      img.className = 'h-full w-full object-cover';
+      container.prepend(img);
+    }
+    return img;
+  }
+
+  if (fileInput) {
+    fileInput.addEventListener('change', function() {
+      const file = this.files && this.files[0];
+      if (!file) return;
+      if (urlInput) urlInput.value = '';
+      const img = ensurePreviewImg();
+      if (previewExternal) previewExternal.style.display = 'none';
+      if (img) {
+        img.src = URL.createObjectURL(file);
+        img.style.display = '';
+      }
+      showPlaceholder(false);
+    });
+  }
+  if (urlInput) {
+    urlInput.addEventListener('input', function() {
+      const v = this.value.trim();
+      if (!v) {
+        if (existingPreview && existingPreview.getAttribute('src')) {
+          showPlaceholder(false);
+        }
+        return;
+      }
+      if (fileInput) fileInput.value = '';
+      const img = ensurePreviewImg();
+      if (previewExternal) previewExternal.style.display = 'none';
+      if (img) {
+        img.src = v;
+        img.style.display = '';
+      }
+      showPlaceholder(false);
+    });
+  }
+});
+</script>
+</body></html>

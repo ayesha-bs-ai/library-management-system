@@ -23,8 +23,8 @@ spring:
     cache: false
   servlet:
     multipart:
-      max-file-size: 5MB
-      max-request-size: 5MB
+      max-file-size: 6MB
+      max-request-size: 6MB
   mail:
     host: localhost
     port: 1025
@@ -66,6 +66,8 @@ app:
   base-url: ${APP_BASE_URL:http://localhost:8080}
   currency: ${APP_CURRENCY:PKR}
   mail-enabled: ${MAIL_ENABLED:false}
+  upload-dir: ${APP_UPLOAD_DIR:./uploads}
+  cover-image-dir: ${APP_COVER_DIR:covers}
 
 logging:
   pattern:

@@ -6,6 +6,7 @@ import com.librarymanagement.branch.LibraryBranchRepository;
 import com.librarymanagement.catalog.web.BookForm;
 import com.librarymanagement.common.exception.BusinessRuleException;
 import com.librarymanagement.common.exception.ResourceNotFoundException;
+import com.librarymanagement.config.FileStorageService;
 import com.librarymanagement.inventory.BookCopy;
 import com.librarymanagement.inventory.BookCopyRepository;
 import com.librarymanagement.inventory.CopyStatus;
@@ -16,8 +17,9 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.Function;
 import java.util.stream.Collectors;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -26,21 +28,26 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class CatalogService {
+    private static final Logger log = LoggerFactory.getLogger(CatalogService.class);
+    
     private final BookRepository books;
     private final AuthorRepository authors;
     private final CategoryRepository categories;
     private final BookCopyRepository copies;
     private final LibraryBranchRepository branches;
     private final AuditService audit;
+    private final FileStorageService fileStorage;
 
     public CatalogService(BookRepository books, AuthorRepository authors, CategoryRepository categories,
-                          BookCopyRepository copies, LibraryBranchRepository branches, AuditService audit) {
+                          BookCopyRepository copies, LibraryBranchRepository branches, AuditService audit,
+                          FileStorageService fileStorage) {
         this.books = books;
         this.authors = authors;
         this.categories = categories;
         this.copies = copies;
         this.branches = branches;
         this.audit = audit;
+        this.fileStorage = fileStorage;
     }
 
     @Transactional(readOnly = true)
@@ -78,6 +85,7 @@ public class CatalogService {
     public Book create(BookForm form) {
         Book book = new Book();
         apply(book, form);
+        handleCoverImage(book, form);
         books.save(book);
         audit.record("BOOK_CREATED", "Book", book.getId().toString(), book.getTitle());
         return book;
@@ -86,7 +94,9 @@ public class CatalogService {
     @Transactional
     public Book update(Long id, BookForm form) {
         Book book = get(id);
+        String oldImagePath = book.getCoverImagePath();
         apply(book, form);
+        handleCoverImageUpdate(book, form, oldImagePath);
         audit.record("BOOK_UPDATED", "Book", id.toString(), book.getTitle());
         return book;
     }
@@ -145,6 +155,53 @@ public class CatalogService {
         book.setPublisher(trimToNull(form.getPublisher()));
         book.setAuthors(resolveAuthors(form.getAuthors()));
         book.setCategories(resolveCategories(form.getCategories()));
+        
+        // Handle cover image URL (external URL)
+        if (form.getCoverImageUrl() != null && !form.getCoverImageUrl().isBlank()) {
+            book.setCoverImageUrl(form.getCoverImageUrl().trim());
+        } else if (form.isRemoveCoverImage()) {
+            book.setCoverImageUrl(null);
+        }
+    }
+
+    private void handleCoverImage(Book book, BookForm form) {
+        try {
+            if (form.getCoverImage() != null && !form.getCoverImage().isEmpty()) {
+                String filename = fileStorage.storeCoverImage(form.getCoverImage());
+                book.setCoverImagePath(filename);
+                // Clear URL if uploading file
+                book.setCoverImageUrl(null);
+                log.info("Cover image uploaded for book '{}': {}", book.getTitle(), filename);
+            }
+        } catch (Exception e) {
+            log.error("Failed to handle cover image upload", e);
+            throw new BusinessRuleException("Failed to upload cover image: " + e.getMessage());
+        }
+    }
+
+    private void handleCoverImageUpdate(Book book, BookForm form, String oldImagePath) {
+        try {
+            if (form.isRemoveCoverImage()) {
+                if (oldImagePath != null) {
+                    fileStorage.deleteCoverImage(oldImagePath);
+                }
+                book.setCoverImagePath(null);
+                book.setCoverImageUrl(null);
+                log.info("Cover image removed for book '{}'", book.getTitle());
+            } else if (form.getCoverImage() != null && !form.getCoverImage().isEmpty()) {
+                // Delete old image if exists
+                if (oldImagePath != null) {
+                    fileStorage.deleteCoverImage(oldImagePath);
+                }
+                String filename = fileStorage.storeCoverImage(form.getCoverImage());
+                book.setCoverImagePath(filename);
+                book.setCoverImageUrl(null);
+                log.info("Cover image updated for book '{}': {}", book.getTitle(), filename);
+            }
+        } catch (Exception e) {
+            log.error("Failed to handle cover image update", e);
+            throw new BusinessRuleException("Failed to upload cover image: " + e.getMessage());
+        }
     }
 
     private Set<Author> resolveAuthors(String commaSeparated) {

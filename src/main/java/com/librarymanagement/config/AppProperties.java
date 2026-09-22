@@ -13,4 +13,6 @@ public class AppProperties {
     private String currency = "PKR";
     private boolean mailEnabled = false;
     private boolean demoMode = false;
+    private String uploadDir = "./uploads";
+    private String coverImageDir = "covers";
 }

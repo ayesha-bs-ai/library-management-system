@@ -7,6 +7,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.web.multipart.MultipartFile;
 
 @Getter
 @Setter
@@ -41,6 +42,16 @@ public class BookForm {
     @NotBlank(message = "Add at least one category")
     private String categories;
 
+    // Image upload fields
+    private MultipartFile coverImage;
+    
+    @Size(max = 500, message = "Image URL too long")
+    private String coverImageUrl;
+    
+    private String existingCoverImagePath;
+    
+    private boolean removeCoverImage = false;
+
     public static BookForm from(Book book) {
         BookForm form = new BookForm();
         form.setIsbn(book.getIsbn());
@@ -52,6 +63,8 @@ public class BookForm {
         form.setPublisher(book.getPublisher());
         form.setAuthors(book.authorNames().replace("Unknown author", ""));
         form.setCategories(book.categoryNames().replace("Uncategorized", ""));
+        form.setCoverImageUrl(book.getCoverImageUrl());
+        form.setExistingCoverImagePath(book.getCoverImagePath());
         return form;
     }
 }

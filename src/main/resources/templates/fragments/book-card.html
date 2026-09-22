@@ -3,11 +3,15 @@
 <body>
 <article th:fragment="card(book, available)" class="surface-hover group overflow-hidden">
     <a th:href="@{/catalog/books/{id}(id=${book.id})}" class="block">
-        <div class="relative flex h-44 items-end overflow-hidden bg-gradient-to-br from-primary-700 via-primary-600 to-blue-400 p-5 text-white">
-            <div class="absolute -right-8 -top-10 h-36 w-36 rounded-full border-[24px] border-white/10"></div>
-            <div class="absolute bottom-8 right-6 h-12 w-12 rounded-full bg-google-yellow/90 blur-[1px]"></div>
+        <div class="relative flex h-44 items-end overflow-hidden p-5 text-white" th:classappend="${book.hasCoverImage()} ? '' : ' bg-gradient-to-br from-primary-700 via-primary-600 to-blue-400'">
+            <!-- Cover image if present -->
+            <img th:if="${book.hasCoverImage()}" th:src="${book.getCoverImage()}" th:alt="${book.title}" class="absolute inset-0 h-full w-full object-cover transition duration-300 group-hover:scale-[1.03]">
+            <div th:if="${book.hasCoverImage()}" class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent"></div>
+            <!-- Decorative for placeholder -->
+            <div th:unless="${book.hasCoverImage()}" class="absolute -right-8 -top-10 h-36 w-36 rounded-full border-[24px] border-white/10"></div>
+            <div th:unless="${book.hasCoverImage()}" class="absolute bottom-8 right-6 h-12 w-12 rounded-full bg-google-yellow/90 blur-[1px]"></div>
             <div class="relative max-w-[80%]">
-                <p class="mb-2 text-xs font-semibold uppercase tracking-[.18em] text-blue-100" th:text="${book.categories.isEmpty() ? 'Library pick' : book.categories.iterator().next().name}">Category</p>
+                <p class="mb-2 text-xs font-semibold uppercase tracking-[.18em] text-blue-100" th:classappend="${book.hasCoverImage()} ? ' text-white/90' : ''" th:text="${book.categories.isEmpty() ? 'Library pick' : book.categories.iterator().next().name}">Category</p>
                 <h3 class="line-clamp-3 text-xl font-semibold leading-tight" th:text="${book.title}">Book title</h3>
             </div>
         </div>

@@ -44,6 +44,12 @@ public class Book extends BaseEntity {
     @Column(nullable = false)
     private boolean archived = false;
 
+    @Column(name = "cover_image_path", length = 500)
+    private String coverImagePath;
+
+    @Column(name = "cover_image_url", length = 500)
+    private String coverImageUrl;
+
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "book_author",
             joinColumns = @JoinColumn(name = "book_id"),
@@ -62,5 +68,20 @@ public class Book extends BaseEntity {
 
     public String categoryNames() {
         return categories.stream().map(Category::getName).sorted().reduce((a, b) -> a + ", " + b).orElse("Uncategorized");
+    }
+
+    public String getCoverImage() {
+        if (coverImagePath != null && !coverImagePath.isBlank()) {
+            return "/uploads/covers/" + coverImagePath;
+        }
+        if (coverImageUrl != null && !coverImageUrl.isBlank()) {
+            return coverImageUrl;
+        }
+        return null;
+    }
+
+    public boolean hasCoverImage() {
+        return (coverImagePath != null && !coverImagePath.isBlank()) || 
+               (coverImageUrl != null && !coverImageUrl.isBlank());
     }
 }
