@@ -1,5 +1,5 @@
-<!DOCTYPE html><html lang="en" xmlns:th="http://www.thymeleaf.org"><head th:replace="~{fragments/layout :: head(${title})}\"></head><body>
-<nav th:replace="~{fragments/layout :: nav('books')}\"></nav><div th:replace="~{fragments/layout :: flash}\"></div>
+<!DOCTYPE html><html lang="en" xmlns:th="http://www.thymeleaf.org"><head th:replace="~{fragments/layout :: head(${title})}"></head><body>
+<nav th:replace="~{fragments/layout :: nav('books')}"></nav><div th:replace="~{fragments/layout :: flash}"></div>
 <main class="mx-auto max-w-4xl px-4 py-10 sm:px-6 lg:px-8"><a th:href="${editing} ? @{/staff/books/{id}(id=${bookId})} : @{/staff/books}" class="text-sm font-semibold text-primary-700">← Back</a><div class="mt-5"><h1 class="page-title" th:text="${title}">Book</h1><p class="page-subtitle">Keep the catalog clear, searchable, and useful to readers.</p></div>
 <form th:object="${bookForm}" th:action="${editing} ? @{/staff/books/{id}(id=${bookId})} : @{/staff/books}" method="post" enctype="multipart/form-data" class="surface mt-8 p-6 sm:p-8">
 <div th:if="${#fields.hasGlobalErrors()}" class="mb-6 rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-700"><p th:each="e : ${#fields.globalErrors()}" th:text="${e}">Error</p></div>
@@ -54,7 +54,7 @@
 <div><label class="field-label" for="language">Language</label><input id="language" th:field="*{language}" class="field"><p class="field-error" th:errors="*{language}"></p></div>
 <div class="sm:col-span-2"><label class="field-label" for="description">Description</label><textarea id="description" th:field="*{description}" class="field min-h-36" placeholder="A clear description for readers"></textarea><p class="field-error" th:errors="*{description}"></p></div>
 </div><div class="mt-8 flex flex-wrap justify-end gap-3"><a th:href="${editing} ? @{/staff/books/{id}(id=${bookId})} : @{/staff/books}" class="btn-ghost">Cancel</a><button class="btn-primary" type="submit" th:text="${editing ? 'Save changes' : 'Add book'}">Save</button></div>
-</form></main><footer th:replace="~{fragments/layout :: footer}\"></footer>
+</form></main><footer th:replace="~{fragments/layout :: footer}"></footer>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
   const fileInput = document.getElementById('coverImage');

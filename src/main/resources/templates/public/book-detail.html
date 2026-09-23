@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
-<head th:replace="~{fragments/layout :: head(${title})}\"></head>
+<head th:replace="~{fragments/layout :: head(${title})}"></head>
 <body>
-<nav th:replace="~{fragments/layout :: nav('catalog')}\"></nav>
-<div th:replace="~{fragments/layout :: flash}\"></div>
+<nav th:replace="~{fragments/layout :: nav('catalog')}"></nav>
+<div th:replace="~{fragments/layout :: flash}"></div>
 <main class="mx-auto max-w-6xl px-4 py-10 sm:px-6 lg:px-8">
     <a th:href="@{/catalog}" class="inline-flex items-center gap-2 text-sm font-semibold text-primary-700 hover:underline">← Back to catalog</a>
     <div class="mt-7 grid gap-10 lg:grid-cols-[20rem_1fr]">
@@ -51,6 +51,6 @@
         </div>
     </section>
 </main>
-<footer th:replace="~{fragments/layout :: footer}\"></footer>
+<footer th:replace="~{fragments/layout :: footer}"></footer>
 </body>
 </html>
