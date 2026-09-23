@@ -4,6 +4,8 @@ import com.librarymanagement.auth.CurrentUserService;
 import com.librarymanagement.auth.UserAccount;
 import com.librarymanagement.notification.NotificationService;
 import java.time.Year;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.ui.Model;
@@ -12,6 +14,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 
 @ControllerAdvice
 public class GlobalModelAdvice {
+    private static final Logger log = LoggerFactory.getLogger(GlobalModelAdvice.class);
     private final AppProperties properties;
     private final CurrentUserService currentUsers;
     private final NotificationService notifications;
@@ -29,9 +32,19 @@ public class GlobalModelAdvice {
         model.addAttribute("demoMode", properties.isDemoMode());
         model.addAttribute("currentYear", Year.now().getValue());
         if (authentication != null && authentication.isAuthenticated() && !(authentication instanceof AnonymousAuthenticationToken)) {
-            UserAccount user = currentUsers.requireCurrentUser();
-            model.addAttribute("currentUser", user);
-            model.addAttribute("unreadNotificationCount", notifications.unreadCount(user.getId()));
+            try {
+                UserAccount user = currentUsers.requireCurrentUser();
+                model.addAttribute("currentUser", user);
+                try {
+                    model.addAttribute("unreadNotificationCount", notifications.unreadCount(user.getId()));
+                } catch (Exception e) {
+                    log.debug("Could not load notification count", e);
+                    model.addAttribute("unreadNotificationCount", 0);
+                }
+            } catch (Exception e) {
+                log.debug("Could not load current user for globals", e);
+                // Don't add currentUser - layout will handle null safely
+            }
         }
     }
 }

@@ -18,8 +18,8 @@
         <div class="p-5">
             <p class="truncate text-sm text-muted" th:text="${book.authorNames()}">Author</p>
             <div class="mt-4 flex items-center justify-between gap-3">
-                <span th:if="${available > 0}" class="chip-green"><span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span><span th:text="${available + ' available'}">Available</span></span>
-                <span th:unless="${available > 0}" class="chip-amber"><span class="h-1.5 w-1.5 rounded-full bg-amber-500"></span>Waitlist</span>
+                <span th:if="${available != null and available > 0}" class="chip-green"><span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span><span th:text="${available + ' available'}">Available</span></span>
+                <span th:unless="${available != null and available > 0}" class="chip-amber"><span class="h-1.5 w-1.5 rounded-full bg-amber-500"></span>Waitlist</span>
                 <span class="text-sm font-semibold text-primary-700 transition group-hover:translate-x-0.5">View →</span>
             </div>
         </div>
