@@ -37,7 +37,7 @@ public class PasswordController {
             users.changePassword(currentUsers.requireCurrentUser(), passwordChangeForm.getCurrentPassword(),
                     passwordChangeForm.getNewPassword(), passwordChangeForm.getConfirmPassword());
             redirect.addFlashAttribute("success", "Your password has been changed.");
-            return "redirect:/dashboard";
+            return "redirect:/account/profile";
         } catch (BusinessRuleException ex) {
             binding.reject("password", ex.getMessage());
             model.addAttribute("title", "Change password");

@@ -15,6 +15,8 @@
 
             <div th:if="${param.error}" class="mt-6 rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">The email or password is incorrect, or this account is disabled.</div>
             <div th:if="${param.logout}" class="mt-6 rounded-2xl border border-emerald-200 bg-emerald-50 p-4 text-sm text-emerald-700">You have been signed out safely.</div>
+            <div th:if="${param.profileUpdated}" class="mt-6 rounded-2xl border border-blue-200 bg-blue-50 p-4 text-sm text-blue-700">Email updated. Please sign in with your new email address.</div>
+            <div th:if="${success}" class="mt-6 rounded-2xl border border-emerald-200 bg-emerald-50 p-4 text-sm text-emerald-700" th:text="${success}">Success</div>
 
             <form th:action="@{/login}" method="post" class="mt-8 grid gap-5">
                 <div><label for="email" class="field-label">Email address</label><input id="email" name="email" type="email" autocomplete="username" class="field" placeholder="you@example.com" required autofocus></div>

@@ -33,4 +33,6 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     boolean existsByMembershipNumberIgnoreCaseAndIdNot(String membershipNumber, Long id);
     long countByStatus(MemberStatus status);
     List<Member> findTop5ByOrderByCreatedAtDesc();
+    Optional<Member> findByUserAccountId(Long userAccountId);
+    List<Member> findByUserAccountIdIn(List<Long> ids);
 }

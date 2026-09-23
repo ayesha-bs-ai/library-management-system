@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head(${title})}"></head>
+<body>
+<nav th:replace="~{fragments/layout :: nav('account')}"></nav>
+<div th:replace="~{fragments/layout :: flash}"></div>
+
+<main class="mx-auto max-w-5xl px-4 py-10 sm:px-6 lg:px-8">
+    <a th:href="@{/dashboard}" class="text-sm font-semibold text-primary-700">← Back to dashboard</a>
+
+    <div class="mt-6">
+        <h1 class="page-title">Edit profile</h1>
+        <p class="page-subtitle">Update your display name, email address, and password.</p>
+    </div>
+
+    <div class="mt-8 grid gap-7 lg:grid-cols-[1.1fr_.9fr]">
+
+        <!-- Profile Info -->
+        <section class="surface p-6 sm:p-8">
+            <div class="flex items-start gap-4">
+                <div class="grid h-12 w-12 place-items-center rounded-2xl bg-primary-600 text-lg font-bold text-white" th:text="${#strings.substring(currentAccount.displayName,0,1)}">A</div>
+                <div>
+                    <h2 class="text-lg font-semibold">Personal information</h2>
+                    <p class="mt-1 text-sm text-muted">This information is visible to staff and used for notifications.</p>
+                </div>
+            </div>
+
+            <form th:object="${profileForm}" th:action="@{/account/profile}" method="post" class="mt-7">
+                <div th:if="${#fields.hasGlobalErrors()}" class="mb-5 rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
+                    <p th:each="e : ${#fields.globalErrors()}" th:text="${e}"></p>
+                </div>
+
+                <div class="grid gap-5">
+                    <div>
+                        <label class="field-label" for="displayName">Display name</label>
+                        <input id="displayName" th:field="*{displayName}" class="field" placeholder="Your full name">
+                        <p class="field-error" th:errors="*{displayName}"></p>
+                        <p class="mt-1.5 text-xs text-muted">Shown in the header and on your loans.</p>
+                    </div>
+
+                    <div>
+                        <label class="field-label" for="email">Email address</label>
+                        <input id="email" type="email" th:field="*{email}" class="field" placeholder="you@example.com">
+                        <p class="field-error" th:errors="*{email}"></p>
+                        <p class="mt-1.5 text-xs text-muted">Changing your email will require you to sign in again.</p>
+                    </div>
+
+                    <div class="rounded-xl bg-slate-50 p-4 text-xs leading-5 text-muted">
+                        <p><span class="font-semibold text-slate-700">Role:</span> <span th:text="${currentAccount.role}">MEMBER</span></p>
+                        <p class="mt-1"><span class="font-semibold text-slate-700">Account ID:</span> <span th:text="${currentAccount.id}">1</span> · <span th:text="${currentAccount.enabled ? 'Active' : 'Disabled'}">Active</span></p>
+                    </div>
+
+                    <div class="flex justify-end pt-2">
+                        <button type="submit" class="btn-primary">Save changes</button>
+                    </div>
+                </div>
+            </form>
+        </section>
+
+        <!-- Password Change -->
+        <section class="surface p-6 sm:p-8">
+            <div class="flex items-start gap-4">
+                <div class="grid h-12 w-12 place-items-center rounded-2xl bg-slate-100 text-slate-700">
+                    <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
+                </div>
+                <div>
+                    <h2 class="text-lg font-semibold">Change password</h2>
+                    <p class="mt-1 text-sm text-muted">Use at least 12 characters. Avoid reused passwords.</p>
+                </div>
+            </div>
+
+            <form th:object="${passwordChangeForm}" th:action="@{/account/profile/password}" method="post" class="mt-7">
+                <div th:if="${#fields.hasGlobalErrors()}" class="mb-5 rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
+                    <p th:each="e : ${#fields.globalErrors()}" th:text="${e}"></p>
+                </div>
+
+                <div class="grid gap-5">
+                    <div>
+                        <label class="field-label">Current password</label>
+                        <input type="password" th:field="*{currentPassword}" class="field" autocomplete="current-password" placeholder="••••••••••••">
+                        <p class="field-error" th:errors="*{currentPassword}"></p>
+                    </div>
+
+                    <div>
+                        <label class="field-label">New password</label>
+                        <input type="password" th:field="*{newPassword}" class="field" autocomplete="new-password" placeholder="At least 12 characters">
+                        <p class="field-error" th:errors="*{newPassword}"></p>
+                    </div>
+
+                    <div>
+                        <label class="field-label">Confirm new password</label>
+                        <input type="password" th:field="*{confirmPassword}" class="field" autocomplete="new-password" placeholder="Repeat new password">
+                        <p class="field-error" th:errors="*{confirmPassword}"></p>
+                    </div>
+
+                    <div class="flex justify-end pt-2">
+                        <button type="submit" class="btn-primary">Update password</button>
+                    </div>
+                </div>
+            </form>
+
+            <div class="mt-8 rounded-2xl border border-amber-200 bg-amber-50 p-4 text-xs leading-5 text-amber-800">
+                <p class="font-semibold">Security tip</p>
+                <p class="mt-1">After changing your password, you will stay signed in on this device. Other sessions will need the new password.</p>
+            </div>
+        </section>
+    </div>
+</main>
+
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+</body>
+</html>
