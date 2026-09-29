@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Library Management System</title>
+<style>
+/* Change these 4 colors to match your college logo */
+:root{--main:#0f4c3a;--accent:#c9a227;--paper:#f7f4ec;--ink:#1b2a25;--white:#fff}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:"Segoe UI",Arial,sans-serif;background:var(--paper);color:var(--ink);line-height:1.6}
+h1,h2,h3,.brand b{font-family:Georgia,"Times New Roman",serif}
+a{color:inherit;text-decoration:none}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.wrap{max-width:1100px;margin:0 auto;padding:0 24px}
+header{background:var(--main);color:var(--white)}
+header .wrap{display:flex;align-items:center;justify-content:space-between;height:76px}
+.brand{display:flex;align-items:center;gap:12px}
+.brand b{font-size:1.25rem;line-height:1.1;display:block}
+.brand small{color:var(--accent);font-size:.8rem}
+nav a{margin-left:26px;font-size:.95rem;padding:6px 0;border-bottom:2px solid transparent}
+nav a:hover{border-color:var(--accent)}
+.hero{background:var(--main);color:var(--white);padding:70px 0 90px}
+.hero .wrap{display:grid;grid-template-columns:1.2fr .8fr;gap:40px;align-items:center}
+.hero h1{font-size:2.8rem;line-height:1.15;margin-bottom:14px}
+.hero p{color:#d5e3dd;max-width:480px;margin-bottom:26px}
+.search{display:flex;background:var(--white);border-radius:6px;overflow:hidden;max-width:520px}
+.search input{flex:1;border:0;padding:15px 16px;font-size:1rem;color:var(--ink)}
+.search button{background:var(--accent);border:0;padding:0 24px;font-weight:700;font-size:1rem;color:var(--ink);cursor:pointer}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.stats div{border:1px solid rgba(255,255,255,.25);padding:20px;border-radius:6px}
+.stats strong{display:block;font-family:Georgia,serif;font-size:2rem;color:var(--accent)}
+section{padding:60px 0}
+h2{font-size:1.9rem;margin-bottom:6px}
+.sub{color:#5b6b64;margin-bottom:30px}
+.books{display:grid;grid-template-columns:repeat(4,1fr);gap:22px}
+.book{background:var(--white);border-radius:6px;overflow:hidden;border:1px solid #e3ddcc}
+.cover{height:170px;display:flex;align-items:flex-end;padding:14px;color:var(--white);font-family:Georgia,serif;font-size:1.05rem;line-height:1.25;border-left:10px solid rgba(0,0,0,.25)}
+.info{padding:14px}
+.info small{color:#5b6b64;display:block}
+.tag{display:inline-block;margin-top:8px;font-size:.8rem;font-weight:700;padding:2px 10px;border-radius:20px}
+.in{background:#dcefe6;color:#0f4c3a}.out{background:#f6dcd6;color:#8a2a1a}
+#none{display:none;padding:20px;background:var(--white);border-radius:6px}
+.lower{background:var(--white)}
+.cols{display:grid;grid-template-columns:1fr 1fr 1fr;gap:30px}
+.cols h3{margin-bottom:10px;border-bottom:3px solid var(--accent);display:inline-block;padding-bottom:2px}
+.cols li{list-style:none;display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid #eee}
+footer{background:var(--main);color:#d5e3dd;padding:28px 0;text-align:center;font-size:.9rem}
+dialog{border:0;border-radius:8px;padding:26px;width:min(400px,92vw);margin:auto}
+dialog::backdrop{background:rgba(0,0,0,.5)}
+dialog h3{margin-bottom:4px}
+label{display:block;font-weight:600;margin-top:12px}
+dialog input,dialog select{width:100%;padding:10px;border:1px solid #aaa;border-radius:4px;font-size:1rem;margin-top:4px}
+.btn{background:var(--accent);color:var(--ink);border:0;padding:9px 18px;border-radius:5px;font-weight:700;cursor:pointer;font-size:.95rem}
+.btn.alt{background:transparent;border:1px solid #999}
+.row{display:flex;gap:10px;margin-top:18px}
+.mini{border:1px solid #ccc;background:#fff;padding:3px 9px;border-radius:4px;cursor:pointer;font-size:.8rem;margin:8px 4px 0 0}
+.bar{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:6px}
+#addBtn{display:none}
+.right{display:flex;align-items:center;gap:26px}
+.note{font-size:.85rem;color:#8a2a1a;min-height:1.2em;margin-top:8px}
+.editing span[contenteditable=true]{outline:1px dashed var(--accent);padding:0 4px}
+@media(max-width:820px){.hero .wrap,.cols{grid-template-columns:1fr}.books{grid-template-columns:1fr 1fr}.hero h1{font-size:2.1rem}nav{display:none}}
+</style>
+</head>
+<body>
+
+<header>
+<div class="wrap">
+  <a class="brand" href="#">
+    <!-- Library logo: open book + shield, uses the same color variables -->
+    <svg width="48" height="48" viewBox="0 0 64 64" role="img" aria-label="Library Management System logo">
+      <path d="M32 3 57 12v20c0 15-11 24-25 29C18 56 7 47 7 32V12z" fill="#c9a227"/>
+      <path d="M32 8 52 15v17c0 12-9 20-20 24C21 52 12 44 12 32V15z" fill="#0f4c3a"/>
+      <path d="M32 24c-4-3-10-4-15-3v20c5-1 11 0 15 3 4-3 10-4 15-3V21c-5-1-11 0-15 3z" fill="#f7f4ec"/>
+      <path d="M32 24v20" stroke="#c9a227" stroke-width="2"/>
+    </svg>
+    <span><b>Library Management System</b><small>Your College Library</small></span>
+  </a>
+  <div class="right"><nav><a href="#books">Books</a><a href="#timings">Timings</a><a href="#rules">Rules</a><a href="#contact">Contact</a></nav><button class="btn" id="loginBtn">Login</button></div>
+</div>
+</header>
+
+<div class="hero">
+<div class="wrap">
+  <div>
+    <h1>Find your next book in seconds</h1>
+    <p>Search the college library catalogue by title, author or subject, and see right away if a copy is available.</p>
+    <form class="search" onsubmit="return false" role="search">
+      <input id="q" type="search" placeholder="Search by title, author or subject" aria-label="Search books">
+      <button type="button" onclick="find()">Search</button>
+    </form>
+  </div>
+  <div class="stats">
+    <div><strong>5,000+</strong>Books</div>
+    <div><strong>40+</strong>Subjects</div>
+    <div><strong>14 days</strong>Issue period</div>
+    <div><strong>Free</strong>Student membership</div>
+  </div>
+</div>
+</div>
+
+<section id="books">
+<div class="wrap">
+  <div class="bar"><div><h2>Featured books</h2>
+  <p class="sub" id="sub">A few titles students are borrowing this month.</p></div>
+  <button class="btn" id="addBtn">+ Add book</button></div>
+  <div class="books" id="list"></div>
+  <p id="none">No book matches your search. Try another title, author or subject.</p>
+</div>
+</section>
+
+<section class="lower">
+<div class="wrap cols">
+  <div id="timings"><h3>Library timings</h3>
+    <ul><li>Monday to Friday<span>8:00 am – 4:00 pm</span></li><li>Saturday<span>9:00 am – 1:00 pm</span></li><li>Sunday<span>Closed</span></li></ul></div>
+  <div id="rules"><h3>Issue rules</h3>
+    <ul><li>Books per student<span>3</span></li><li>Issue period<span>14 days</span></li><li>Late fine<span>Rs. 5 per day</span></li></ul></div>
+  <div id="contact"><h3>Contact</h3>
+    <ul><li>Librarian<span>Library Desk</span></li><li>Location<span>Main Block, Ground Floor</span></li><li>Email<span>library@college.edu</span></li></ul></div>
+</div>
+</section>
+
+<footer>© 2026 Library Management System. College project.</footer>
+
+<dialog id="loginD">
+<form method="dialog" id="loginF">
+  <h3>Login</h3><p class="sub" style="margin:0">Enter your username and password</p>
+  <label for="u">Username</label><input id="u" autocomplete="username" required>
+  <label for="p">Password</label><input id="p" type="password" autocomplete="current-password" required>
+  <p class="note" id="err"></p>
+  <p style="font-size:.8rem;color:#5b6b64">Librarian demo: admin / admin123</p>
+  <div class="row"><button class="btn" type="submit">Login</button><button class="btn alt" type="button" id="loginX">Cancel</button></div>
+  <p style="font-size:.85rem;margin-top:14px">No account? <a href="#" id="toSignup" style="color:var(--main);font-weight:700;text-decoration:underline">Sign up</a></p>
+</form>
+<form method="dialog" id="signupF" style="display:none">
+  <h3>Sign up</h3><p class="sub" style="margin:0">Choose your own username and password</p>
+  <label for="su">Username</label><input id="su" autocomplete="username" required>
+  <label for="sn">Your name</label><input id="sn" required>
+  <label for="sp">Password</label><input id="sp" type="password" autocomplete="new-password" required minlength="4">
+  <label for="sp2">Confirm password</label><input id="sp2" type="password" autocomplete="new-password" required minlength="4">
+  <p class="note" id="serr"></p>
+  <div class="row"><button class="btn" type="submit">Create account</button><button class="btn alt" type="button" id="signupX">Cancel</button></div>
+  <p style="font-size:.85rem;margin-top:14px">Already have an account? <a href="#" id="toLogin" style="color:var(--main);font-weight:700;text-decoration:underline">Login</a></p>
+</form>
+</dialog>
+
+<dialog id="bookD"><form method="dialog" id="bookF">
+  <h3 id="bookH">Add book</h3>
+  <label for="bt">Title</label><input id="bt" required>
+  <label for="ba">Subject</label><input id="ba" required>
+  <label for="bs">Status</label><select id="bs"><option value="1">Available</option><option value="0">Issued</option></select>
+  <div class="row"><button class="btn" type="submit">Save book</button><button class="btn alt" type="button" id="bookX">Cancel</button></div>
+</form></dialog>
+
+<script>
+const $=id=>document.getElementById(id);
+const store={get(k,d){try{return JSON.parse(localStorage.getItem(k))??d}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+const colors=["#0f4c3a","#7a4b12","#243b6b","#6b2440","#3b5a2a","#5a3a6b","#8a5a1a","#1f5a66"];
+const defaults=[
+ {t:"Python Programming",a:"Computer Science",in:true},
+ {t:"Physics for Class 11",a:"Physics",in:true},
+ {t:"Fundamentals of Database Systems",a:"Computer Science",in:false},
+ {t:"English Grammar in Use",a:"English",in:true},
+ {t:"Calculus and Analytic Geometry",a:"Mathematics",in:true},
+ {t:"Chemistry Made Simple",a:"Chemistry",in:false},
+ {t:"Pakistan Studies",a:"History",in:true},
+ {t:"Introduction to Networking",a:"Computer Science",in:true}
+];
+let books=store.get("lms_books",defaults);
+let user=store.get("lms_user",null);
+// built-in librarian account, plus whatever users have signed up (stored under lms_users)
+const fixedAccounts={admin:{p:"admin123",role:"admin",name:"Librarian"}};
+let users=store.get("lms_users",{});
+const isAdmin=()=>user&&user.role==="admin";
+const saveBooks=()=>store.set("lms_books",books);
+
+function render(){
+  const q=$("q").value.trim().toLowerCase();
+  const items=books.map((b,i)=>({b,i})).filter(x=>(x.b.t+" "+x.b.a).toLowerCase().includes(q));
+  $("list").innerHTML=items.map(({b,i})=>{
+    let ctl="";
+    if(isAdmin())ctl=`<button class="mini" data-do="edit" data-i="${i}">Edit</button><button class="mini" data-do="flip" data-i="${i}">Mark ${b.in?'issued':'returned'}</button><button class="mini" data-do="del" data-i="${i}">Delete</button>`;
+    else if(user&&b.in)ctl=`<button class="mini" data-do="issue" data-i="${i}">Issue this book</button>`;
+    return `<article class="book"><div class="cover" style="background:${colors[i%colors.length]}">${esc(b.t)}</div><div class="info"><small>${esc(b.a)}</small><span class="tag ${b.in?'in':'out'}">${b.in?'Available':'Issued'}</span><div>${ctl}</div></div></article>`}).join("");
+  $("none").style.display=items.length?"none":"block";
+}
+const esc=t=>t.replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+
+function ui(){
+  $("loginBtn").textContent=user?`Logout (${user.name})`:"Login";
+  $("addBtn").style.display=isAdmin()?"block":"none";
+  $("sub").textContent=isAdmin()?"You are logged in as librarian. Add, edit or delete books. Click any timing, rule or contact value to edit it.":user?"Logged in as student. You can issue any available book.":"A few titles students are borrowing this month.";
+  document.body.classList.toggle("editing",isAdmin());
+  document.querySelectorAll(".cols li span").forEach(s=>s.contentEditable=isAdmin());
+  render();
+}
+
+// editable page text (timings, rules, contact)
+const spans=[...document.querySelectorAll(".cols li span")];
+const saved=store.get("lms_text",null);
+if(saved)spans.forEach((s,i)=>{if(saved[i]!=null)s.textContent=saved[i]});
+spans.forEach(s=>s.addEventListener("blur",()=>store.set("lms_text",spans.map(x=>x.textContent))));
+
+// login / signup
+function showLogin(){
+  $("signupF").style.display="none";$("loginF").style.display="block";
+  $("err").textContent="";$("loginF").reset();
+}
+function showSignup(){
+  $("loginF").style.display="none";$("signupF").style.display="block";
+  $("serr").textContent="";$("signupF").reset();
+}
+$("loginBtn").onclick=()=>{
+  if(user){user=null;store.set("lms_user",null);ui();return}
+  showLogin();$("loginD").showModal();
+};
+$("loginX").onclick=()=>$("loginD").close();
+$("signupX").onclick=()=>$("loginD").close();
+$("toSignup").onclick=e=>{e.preventDefault();showSignup()};
+$("toLogin").onclick=e=>{e.preventDefault();showLogin()};
+
+$("loginF").onsubmit=e=>{
+  const name=$("u").value.trim().toLowerCase();
+  const pass=$("p").value;
+  const a=fixedAccounts[name]||users[name];
+  if(!a||a.p!==pass){e.preventDefault();$("err").textContent="Wrong username or password.";return}
+  user={role:a.role,name:a.name};store.set("lms_user",user);ui();
+};
+
+$("signupF").onsubmit=e=>{
+  const name=$("su").value.trim().toLowerCase();
+  const display=$("sn").value.trim();
+  const pass=$("sp").value,pass2=$("sp2").value;
+  if(!name||!display){e.preventDefault();$("serr").textContent="Please fill in every field.";return}
+  if(fixedAccounts[name]||users[name]){e.preventDefault();$("serr").textContent="This username is already taken. Choose another.";return}
+  if(pass.length<4){e.preventDefault();$("serr").textContent="Password must be at least 4 characters.";return}
+  if(pass!==pass2){e.preventDefault();$("serr").textContent="Passwords do not match.";return}
+  users[name]={p:pass,role:"student",name:display};
+  store.set("lms_users",users);
+  user={role:"student",name:display};store.set("lms_user",user);ui();
+};
+
+// add / edit book
+let editing=-1;
+function openBook(i){
+  editing=i;$("bookH").textContent=i<0?"Add book":"Edit book";
+  $("bt").value=i<0?"":books[i].t;$("ba").value=i<0?"":books[i].a;$("bs").value=i<0||books[i].in?"1":"0";
+  $("bookD").showModal();
+}
+$("addBtn").onclick=()=>openBook(-1);
+$("bookX").onclick=()=>$("bookD").close();
+$("bookF").onsubmit=()=>{
+  const b={t:$("bt").value.trim(),a:$("ba").value.trim(),in:$("bs").value==="1"};
+  if(editing<0)books.push(b);else books[editing]=b;
+  saveBooks();render();
+};
+
+// book buttons
+$("list").onclick=e=>{
+  const d=e.target.dataset.do,i=+e.target.dataset.i;
+  if(!d)return;
+  if(d==="edit")openBook(i);
+  if(d==="flip")books[i].in=!books[i].in;
+  if(d==="issue")books[i].in=false;
+  if(d==="del"){if(!confirm("Delete \""+books[i].t+"\"?"))return;books.splice(i,1)}
+  saveBooks();render();
+};
+
+// search
+function find(){render();$("books").scrollIntoView({behavior:"smooth"})}
+$("q").addEventListener("keydown",e=>{if(e.key==="Enter")find()});
+$("q").addEventListener("input",render);
+ui();
+</script>
+</body>
+</html>
